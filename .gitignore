@@ -3,3 +3,8 @@ __pycache__/
 *.pyo
 .streamlit/secrets.toml
 .env
+progress.json
+android_app/
+start_server.bat
+start_server.ps1
+.claude/
