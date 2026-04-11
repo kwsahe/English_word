@@ -55,9 +55,12 @@ st.markdown("""
     font-size: clamp(1.8rem, 6vw, 3rem);
     font-weight: 800;
     letter-spacing: 2px;
-    color: #ffffff;
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #1565C0, #283593);
+    border-radius: 14px;
     padding: 40px 20px 32px;
     line-height: 1.2;
+    margin: 4px 0;
 }
 
 /* ── 플래시카드 뒷면 ── */
@@ -65,9 +68,12 @@ st.markdown("""
     text-align: center;
     font-size: clamp(1.4rem, 4vw, 2rem);
     font-weight: 700;
-    color: #ffffff;
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #2e7d32, #1b5e20);
+    border-radius: 14px;
     padding: 16px 20px 24px;
     line-height: 1.4;
+    margin: 4px 0;
 }
 
 /* ── 무한 시험 문제 텍스트 ── */
@@ -76,9 +82,12 @@ st.markdown("""
     font-size: clamp(1.6rem, 5vw, 2.6rem);
     font-weight: 800;
     letter-spacing: 1px;
-    color: #1a237e;
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #1565C0, #283593);
+    border-radius: 14px;
     padding: 28px 16px 20px;
     line-height: 1.3;
+    margin: 4px 0;
 }
 
 /* ── 토익 빈칸 문장 ── */
