@@ -357,33 +357,35 @@ def pick_next_inf():
 words          = load_words()
 all_categories = sorted(set(w["category"] for w in words))
 
+# localStorage 값 요청 (첫 렌더: None 반환 → 자동 rerun → 두 번째 렌더: 실제 값)
+_ls_raw = streamlit_js_eval(
+    js_expressions=f"localStorage.getItem('{LS_KEY}')",
+    want_output=True,
+    key="ls_init",
+)
+
 if "initialized" not in st.session_state:
-    # localStorage를 먼저 확인 (클라우드 재시작 후에도 진도 복원)
-    ls_raw = streamlit_js_eval(
-        js_expressions=f"localStorage.getItem('{LS_KEY}')",
-        want_output=True,
-        key="ls_init",
-    )
-    if ls_raw is None:
-        # 첫 렌더: JS 결과 대기 중 — 잠시 후 자동으로 재실행됩니다
-        st.markdown("⏳ 로딩 중...")
-        st.stop()
-
-    # 두 번째 렌더: ls_raw 에 값이 있음
-    p: dict = {}
-    if ls_raw and ls_raw not in ("null", "undefined", ""):
-        try:
-            p = json.loads(ls_raw)
-        except Exception:
-            p = load_progress()
-    else:
-        p = load_progress()
-
+    # 일단 파일 기반으로 초기화 (로컬 실행 대응)
+    p = load_progress()
     st.session_state.memorized     = set(p.get("memorized", []))
     st.session_state.wrong         = set(p.get("wrong", []))
     st.session_state.correct_words = set(p.get("correct", []))
     st.session_state.sessions      = p.get("sessions", [])
     st.session_state.initialized   = True
+    st.session_state._ls_applied   = False
+
+# localStorage 값이 도착하면 덮어쓰기 (클라우드 환경에서 진도 복원)
+if not st.session_state.get("_ls_applied") and _ls_raw is not None:
+    if _ls_raw and _ls_raw not in ("null", "undefined", ""):
+        try:
+            p = json.loads(_ls_raw)
+            st.session_state.memorized     = set(p.get("memorized", []))
+            st.session_state.wrong         = set(p.get("wrong", []))
+            st.session_state.correct_words = set(p.get("correct", []))
+            st.session_state.sessions      = p.get("sessions", [])
+        except Exception:
+            pass
+    st.session_state._ls_applied = True
 
 DEFAULTS = {
     # 플래시카드
