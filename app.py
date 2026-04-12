@@ -134,21 +134,26 @@ SHEET_NAME = "영어 단어장"
 # 데이터 로드 / 저장
 # ============================================================
 @st.cache_data
-def load_words():
+def load_words(mtime: float = 0):
+    """mtime을 캐시 키로 사용 — 파일이 바뀌면 자동으로 다시 읽음."""
     wb = openpyxl.load_workbook(EXCEL_PATH, data_only=True)
     ws = wb[SHEET_NAME]
     result = []
+    auto_no = 1  # 번호 열이 비어 있을 때 자동 부여용
     for row in ws.iter_rows(min_row=2, max_row=ws.max_row, values_only=True):
         if not row[1]:
             continue
+        # 번호(col 1)가 없으면 자동 부여
+        no_val = row[0] if row[0] else auto_no
         result.append({
-            "no":       row[0],
+            "no":       no_val,
             "word":     str(row[1]).strip(),
             "meaning":  str(row[2]).strip() if row[2] else "",
             "example":  str(row[3]).strip() if row[3] else "",
             "category": str(row[8]).strip() if len(row) > 8 and row[8] else "기타",
             "_extra":   list(row[4:8]),   # 열 5~8 보존
         })
+        auto_no = int(no_val) + 1
     return result
 
 
@@ -157,12 +162,11 @@ def save_words_to_excel(word_list):
     wb = openpyxl.load_workbook(EXCEL_PATH)
     ws = wb[SHEET_NAME]
 
-    # 기존 데이터 행 지우기
-    for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
-        for cell in row:
-            cell.value = None
+    # 기존 데이터 행을 실제로 삭제 (cell.value=None은 행이 남아 Table 범위가 안 늘어남)
+    if ws.max_row >= 2:
+        ws.delete_rows(2, ws.max_row)
 
-    # 다시 쓰기
+    # 데이터 다시 쓰기
     for i, w in enumerate(word_list, start=2):
         ws.cell(row=i, column=1, value=w["no"])
         ws.cell(row=i, column=2, value=w["word"])
@@ -171,6 +175,11 @@ def save_words_to_excel(word_list):
         for j, val in enumerate(w.get("_extra", [None] * 4), start=5):
             ws.cell(row=i, column=j, value=val)
         ws.cell(row=i, column=9, value=w["category"])
+
+    # Excel Table이 있으면 참조 범위도 업데이트 (A1:I{마지막 행})
+    last_row = len(word_list) + 1
+    for tbl in ws.tables.values():
+        tbl.ref = f"A1:I{last_row}"
 
     wb.save(EXCEL_PATH)
     load_words.clear()   # 캐시 무효화
@@ -363,7 +372,8 @@ def pick_next_inf():
 # ============================================================
 # 세션 초기화
 # ============================================================
-words          = load_words()
+_excel_mtime   = os.path.getmtime(EXCEL_PATH) if os.path.exists(EXCEL_PATH) else 0
+words          = load_words(_excel_mtime)
 all_categories = sorted(set(w["category"] for w in words))
 
 # localStorage 값 요청 (첫 렌더: None 반환 → 자동 rerun → 두 번째 렌더: 실제 값)
