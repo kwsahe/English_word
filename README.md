@@ -7,6 +7,10 @@
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)](https://python.org)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.x-red?logo=streamlit)](https://streamlit.io)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![App](https://img.shields.io/badge/배포-honeyenglish.streamlit.app-ff4b4b?logo=streamlit)](https://honeyenglish.streamlit.app/)
+
+> **바로 사용하기 →** [https://honeyenglish.streamlit.app](https://honeyenglish.streamlit.app/)  
+> PC · 스마트폰 모두 접속 가능합니다.
 
 ---
 
@@ -27,8 +31,10 @@
 Excel 파일(`Word.xlsx`)에 저장된 영단어를 기반으로 동작하는 **모바일 최적화 학습 웹 앱**입니다.  
 플래시카드 학습부터 토익식 빈칸 시험, 실시간 정답률 추적까지 단어 암기에 필요한 모든 기능을 제공합니다.
 
-학습 진도는 **브라우저 localStorage**에 자동 저장되어 PC·모바일 어디서든 이어서 공부할 수 있으며,  
-같은 Wi-Fi 환경이라면 스마트폰 브라우저로 바로 접속해 사용할 수 있습니다.
+**[https://honeyenglish.streamlit.app](https://honeyenglish.streamlit.app/)** 에서 설치 없이 바로 사용할 수 있으며,  
+PC는 물론 **스마트폰 브라우저**에서도 그대로 접속해 학습할 수 있습니다.
+
+학습 진도는 **브라우저 localStorage**에 자동 저장되어 어디서든 이어서 공부할 수 있습니다.
 
 ---
 
